@@ -1,3 +1,5 @@
+using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.XR.Haptics;
@@ -7,14 +9,40 @@ public class Cruise : MonoBehaviour
     [SerializeField] float currentSpeed = 5f;
     [SerializeField] float steerSpeed = 200f;
 
+    [SerializeField] float boostSpeed = 10f;
+
+    [SerializeField] float startingSpeed = 5f;
+
     void Start()
     {
         
     }
 
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Boost"))
+        {
+            currentSpeed = boostSpeed;
+            Destroy(collision.gameObject);
+        }
+        else
+        {
+            currentSpeed = startingSpeed;
+        }
+
+    }
 
     void Update()
     {
+        var time = DateTime.Now;
+
+        var expireTime = time.AddSeconds(5);
+
+        if (DateTime.Now > expireTime)
+        {
+            
+        }
+
         float move = 0f;
         float steer = 0f;
 
