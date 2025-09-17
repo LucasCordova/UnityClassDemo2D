@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -13,8 +14,25 @@ public class Cruise : MonoBehaviour
 
     [SerializeField] float startingSpeed = 5f;
 
+    [SerializeField] ParticleSystem particleSystem = default!;
+
+    [SerializeField] TMP_Text boostText = default!;
+
+
     void Start()
     {
+        boostText.text = "DSHADHOSADOIASDIHPASPIHDPIASD";
+        // boostText = GetComponent<TMP_Text>();
+        //boostText = FindAnyObjectByType< TMP_Text>();
+    
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        boostText.text = string.Empty;
+        var emission = particleSystem.emission;
+        emission.enabled = false;
+        currentSpeed = startingSpeed;
         
     }
 
@@ -22,6 +40,11 @@ public class Cruise : MonoBehaviour
     {
         if (collision.CompareTag("Boost"))
         {
+            boostText.text = "Boost!";
+
+            var emission = particleSystem.emission;
+            emission.enabled = true;
+            
             currentSpeed = boostSpeed;
             Destroy(collision.gameObject);
         }
