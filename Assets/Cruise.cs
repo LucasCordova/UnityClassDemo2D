@@ -1,10 +1,10 @@
 using System;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.XR.Haptics;
 
+[RequireComponent(typeof(ParticleSystem))]
 public class Cruise : MonoBehaviour
 {
     [SerializeField] float currentSpeed = 5f;
@@ -14,46 +14,62 @@ public class Cruise : MonoBehaviour
 
     [SerializeField] float startingSpeed = 5f;
 
-    [SerializeField] ParticleSystem particleSystem = default!;
+    [SerializeField] ParticleSystem ParticleSystem;
 
     [SerializeField] TMP_Text boostText = default!;
+
+    public BoostBurst boostFx;
+
 
 
     void Start()
     {
-        boostText.text = "DSHADHOSADOIASDIHPASPIHDPIASD";
+        ParticleSystem = GetComponent<ParticleSystem>();
+
+
+        boostText.text = string.Empty;
         // boostText = GetComponent<TMP_Text>();
         //boostText = FindAnyObjectByType< TMP_Text>();
-    
+
     }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
         boostText.text = string.Empty;
-        var emission = particleSystem.emission;
+
+        var emission = GetComponent<ParticleSystem>().emission;
         emission.enabled = false;
         currentSpeed = startingSpeed;
-        
+
     }
 
     void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Boost"))
         {
-            boostText.text = "Boost!";
+            // boostText.text = "Boost!";
+            // var emission = particleSystem.emission;
+            // emission.enabled = true;
 
-            var emission = particleSystem.emission;
-            emission.enabled = true;
-            
-            currentSpeed = boostSpeed;
-            Destroy(collision.gameObject);
-        }
-        else
-        {
-            currentSpeed = startingSpeed;
-        }
+            // var main = particleSystem.main;
+            // main.startSpeed = UnityEngine.Random.Range(2f, 5f);
 
-    }
+            // currentSpeed = boostSpeed;
+            // Destroy(collision.gameObject);
+
+            if (collision.CompareTag("Boost"))
+            {
+                // Move/emit at the car (or other.transform.position if you prefer)
+                boostFx.Play(transform.position);
+
+                // your existing boost logic...
+                Destroy(collision.gameObject);
+            }
+        }
+    
+}
+
+
 
     void Update()
     {
@@ -63,7 +79,7 @@ public class Cruise : MonoBehaviour
 
         if (DateTime.Now > expireTime)
         {
-            
+
         }
 
         float move = 0f;
@@ -88,7 +104,7 @@ public class Cruise : MonoBehaviour
         {
             steer = -1f;
         }
-        
+
         float moveAmount = move * currentSpeed * Time.deltaTime;
         float steerAmount = steer * steerSpeed * Time.deltaTime;
 
