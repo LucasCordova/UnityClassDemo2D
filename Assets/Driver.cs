@@ -58,16 +58,19 @@ public class Driver : MonoBehaviour
             BoostBurst.Play(transform.position);
             Destroy(collision.gameObject);
 
-            BoostText.text = "Warp Speeed!";
+            BoostText.text = "Warp Speeeeed!";
             CurrentSpeed = BoostSpeed;
         }
     }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
+        // Collide with anything will stop the boost!
         BoostBurst.Stop();
         BoostText.text = string.Empty;
         CurrentSpeed = StartingSpeed;
+
+        BoostText.text = "Dang it!";
     }
 
 }
